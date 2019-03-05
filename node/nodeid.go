@@ -1,22 +1,20 @@
 package node
 
 import (
+	"encoding/base64"
+
 	"github.com/MagicalTux/seidan/db"
-	"github.com/google/uuid"
 )
 
 func NodeId() string {
 	// get a node id from db
-	v, err := db.SimpleGet([]byte("local"), []byte("node_id"))
-	var id uuid.UUID
+	id, err := db.SimpleGet([]byte("local"), []byte("node_id"))
 
 	if err != nil {
 		// most likely os.ErrNotExist
-		id = uuid.Must(uuid.NewRandom())
-		db.SimpleSet([]byte("local"), []byte("node_id"), id[:])
-		return id.String()
+		id = GetKeyHash()                                    // will generate a key if needed
+		db.SimpleSet([]byte("local"), []byte("node_id"), id) // we store the id so it's fast and doesn't require loading private key
 	}
 
-	copy(id[:], v)
-	return id.String()
+	return base64.RawURLEncoding.EncodeToString(id)
 }

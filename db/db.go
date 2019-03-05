@@ -223,5 +223,6 @@ func (c *DbCursor) Close() error {
 }
 
 func shutdownDb() error {
+	log.Printf("[db] Shutting down database")
 	return db.Close()
 }

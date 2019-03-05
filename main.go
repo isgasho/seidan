@@ -1,11 +1,16 @@
 package main
 
-import "log"
+import (
+	"log"
+
+	"github.com/MagicalTux/seidan/core"
+	"github.com/MagicalTux/seidan/node"
+)
 
 // initialize
 func main() {
 	log.Printf("[main] Initializing Seidan...")
-	initDb()
+	log.Printf("[main] Node ID: %s", node.NodeId())
 
-	shutdownDb()
+	core.Shutdown()
 }

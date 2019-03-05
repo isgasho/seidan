@@ -1,4 +1,4 @@
-package main
+package db
 
 import (
 	"bytes"
@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/MagicalTux/seidan/core"
 	"github.com/boltdb/bolt"
 )
 
@@ -18,20 +19,21 @@ import (
 
 var db *bolt.DB
 
-func initDb() {
+func init() {
 	// Open the Bolt database located in the config directory
 	var err error
-	p := filepath.Join(GetConfigDir(), "seidan.db")
+	p := filepath.Join(core.GetConfigDir(), "seidan.db")
 	log.Printf("[db] Opening database %s", p)
 	db, err = bolt.Open(p, 0600, nil)
 	if err != nil {
 		panic(err)
 	}
+	core.RegisterShutdown(shutdownDb)
 }
 
 // simple db get for program usage
 func DbGet(key string) (string, error) {
-	v, err := dbSimpleGet([]byte("app"), []byte(key))
+	v, err := SimpleGet([]byte("app"), []byte(key))
 	return string(v), err
 }
 
@@ -58,7 +60,7 @@ func feedDbSet(bucket, key, val []byte, v DbStamp) error {
 	// compute global key (bucket + NUL + key)
 	fk := append(append(bucket, 0), key...)
 	// check version
-	curV, err := dbSimpleGet([]byte("version"), fk)
+	curV, err := SimpleGet([]byte("version"), fk)
 	if err != nil {
 		return err
 	}
@@ -116,7 +118,7 @@ func feedDbSet(bucket, key, val []byte, v DbStamp) error {
 }
 
 // internal setter
-func dbSimpleSet(bucket, key, val []byte) error {
+func SimpleSet(bucket, key, val []byte) error {
 	return db.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists(bucket)
 		if err != nil {
@@ -127,7 +129,7 @@ func dbSimpleSet(bucket, key, val []byte) error {
 }
 
 // internal getter
-func dbSimpleGet(bucket, key []byte) (r []byte, err error) {
+func SimpleGet(bucket, key []byte) (r []byte, err error) {
 	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket(bucket)
 		if b == nil {
@@ -220,6 +222,6 @@ func (c *DbCursor) Close() error {
 	return c.tx.Rollback()
 }
 
-func shutdownDb() {
-	db.Close()
+func shutdownDb() error {
+	return db.Close()
 }

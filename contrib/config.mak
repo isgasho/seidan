@@ -1,0 +1,2 @@
+PROJECT_NAME=seidan
+DIST_ARCHS=linux_amd64

@@ -9,6 +9,10 @@ or does not provide the right tools to work with large clusters. It should be
 possible to grow clusters easily, add/remove services in a few clicks,
 and know that any lost node is going to be replaced instantly.
 
+# Ports
+
+* TCP Port 65123 (only accept tls connections with client certificate signed by CA)
+
 # Concept
 
 Seidan is a cluster management system that runs on each single node ("star"),

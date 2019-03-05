@@ -33,7 +33,7 @@ func main() {
 	setupSignals()
 
 	log.Printf("[main] Initializing Seidan...")
-	log.Printf("[main] Node ID: %s", node.NodeId())
+	node.Start()
 
 	<-shutdownChannel
 

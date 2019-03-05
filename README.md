@@ -71,4 +71,5 @@ The following will be provided by other software:
 * Inter-node virtual networking (vpn-like, encrypted, peer to peer and secure)
 * Logging facilities
 * High throughput decentralized database
+* pkg access daemon
 

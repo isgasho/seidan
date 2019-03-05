@@ -8,6 +8,7 @@ import (
 
 	"github.com/MagicalTux/seidan/core"
 	"github.com/MagicalTux/seidan/node"
+	"github.com/TrisTech/goupd"
 )
 
 var shutdownChannel = make(chan struct{})
@@ -33,6 +34,7 @@ func main() {
 	setupSignals()
 
 	log.Printf("[main] Initializing Seidan...")
+	goupd.AutoUpdate(false)
 	node.Start()
 
 	<-shutdownChannel

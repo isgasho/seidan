@@ -11,6 +11,10 @@ import (
 
 func serveHttpInsecure(w http.ResponseWriter, r *http.Request) {
 	switch r.URL.Path {
+	case "/health":
+		http.Error(w, "node is not configured", http.StatusServiceUnavailable)
+	case "/id":
+		w.Write([]byte(NodeId()))
 	case "/csr":
 		// got no CA, make a csr
 		tpl := &x509.CertificateRequest{
@@ -26,5 +30,7 @@ func serveHttpInsecure(w http.ResponseWriter, r *http.Request) {
 		d := pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE REQUEST", Bytes: csr})
 		w.Write(d)
 		return
+	default:
+		http.NotFound(w, r)
 	}
 }

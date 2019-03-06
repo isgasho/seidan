@@ -14,6 +14,12 @@ func Start() error {
 		return err
 	}
 
+	// store listen addr
+	srv.addr = a
+
+	// start http server
+	go srv.httpServe()
+
 	l, err := net.ListenTCP("tcp", a)
 	if err != nil {
 		return err

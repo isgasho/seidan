@@ -4,8 +4,6 @@ import (
 	"log"
 	"net"
 	"time"
-
-	"github.com/MagicalTux/seidan/db"
 )
 
 func nodeListener(l *net.TCPListener) {
@@ -32,20 +30,6 @@ func nodeListener(l *net.TCPListener) {
 			return
 		}
 		tempDelay = 0
-		go handleClient(c)
+		go srv.Push(c)
 	}
-}
-
-func handleClient(c *net.TCPConn) {
-	// if we have a CA, initialize a tls connection with said CA
-	// if not, generate & return a CSR
-	ca, err := db.SimpleGet([]byte("global"), []byte("ca"))
-	if err != nil {
-		srv.Push(c)
-		return
-	}
-
-	// TODO
-	_ = ca
-	c.Close()
 }

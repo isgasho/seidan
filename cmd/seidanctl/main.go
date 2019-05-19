@@ -26,6 +26,7 @@ func main() {
 		os.Exit(1)
 	} else if len(ks) == 0 {
 		// Generate?
+		// NOTE: ecdsa, rsa only
 		log.Printf("failed to list HSM keys: no keys. Please generate one.")
 		os.Exit(1)
 	}

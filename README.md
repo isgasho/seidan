@@ -9,6 +9,13 @@ or does not provide the right tools to work with large clusters. It should be
 possible to grow clusters easily, add/remove services in a few clicks,
 and know that any lost node is going to be replaced instantly.
 
+# Setup
+
+You need to generate a x509 compatible key on your HSM for your cluster prior to using
+Seidan. For example if you are using a YubiHSM2:
+
+	generate asymmetric 0 0 seidan:cluster_name 1 exportable-under-wrap,sign-ecdsa ecp256
+
 # Ports
 
 * TCP Port 65123 (only accept tls connections with client certificate signed by CA)

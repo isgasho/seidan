@@ -4,6 +4,8 @@ import (
 	"log"
 	"net"
 	"time"
+
+	quic "github.com/lucas-clemente/quic-go"
 )
 
 func nodeListener(l *net.TCPListener) {
@@ -32,4 +34,37 @@ func nodeListener(l *net.TCPListener) {
 		tempDelay = 0
 		go srv.Push(c)
 	}
+}
+
+func quicListener(l quic.Listener) {
+	for {
+		c, err := l.Accept()
+		if err != nil {
+			log.Printf("[quic] failed to accept: %s", err)
+			return // closed?
+		}
+
+		// TODO
+		c.Close()
+	}
+}
+
+type quicConn struct {
+	quic.Stream
+}
+
+func fakeQuicConn(s quic.Stream, err error) (net.Conn, error) {
+	if err != nil {
+		return nil, err
+	}
+
+	return &quicConn{s}, err
+}
+
+func (c *quicConn) LocalAddr() net.Addr {
+	return &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 80}
+}
+
+func (c *quicConn) RemoteAddr() net.Addr {
+	return &net.TCPAddr{IP: net.IPv4(127, 0, 0, 1), Port: 80}
 }
